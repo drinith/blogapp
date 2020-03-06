@@ -3,7 +3,8 @@
     const handlebars = require('express-handlebars')
     const bodyParser = require('body-parser')
     const app = express()
-    
+    const admin = require('./routers/admin')
+    const path = require('path')
     //const mongoose = require('mongoose')
 
 //Configurações
@@ -16,8 +17,15 @@
     //Mongoose
         //Em breve
     //
+    //Public onde __dirname é o caminho absoluto 
+    app.use(express.static(path.join(__dirname,'public')))
 //Rotas
-
+    //Rotas sem prefixo
+    app.get('/',(req,res)=>{
+        res.send("HOMEZÃO BROTHER")
+    })
+    //Rotas de grupo então as rotas estão lá no admin que foi importado
+    app.use('/admin',admin)
 
 //Outros
 const PORT=8081
