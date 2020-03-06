@@ -6,7 +6,6 @@
     
     //const mongoose = require('mongoose')
 
-
 //Configurações
     //Body Parser
         app.use(bodyParser.urlencoded({extended:true}))
