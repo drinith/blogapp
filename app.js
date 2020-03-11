@@ -7,7 +7,7 @@
     const path = require('path')
     const mongoose = require('mongoose')
     const session = require('express-session')
-    const flash = require('connect-flash')
+    const flash = require('connect-flash')//Flash tipo de sessão que só carrega uma vez
 
 //Configurações
     //Sessão
@@ -40,7 +40,7 @@
     //
     //Public onde __dirname é o caminho absoluto 
     app.use(express.static(path.join(__dirname,'public')))
-//Rotas
+    //Rotas
     //Rotas sem prefixo
     app.get('/',(req,res)=>{
         res.send("HOMEZÃO BROTHER")

@@ -39,18 +39,24 @@ router.post('/categorias/nova',(req,res)=>{
         erros.push({texto:'Nome da categoria é muito pequeno'})
     } 
     if(erros.length>0){
-        res.render('addcategorias',{erros:erros})
+        res.render('admin/addcategorias',{erros:erros})
+    }else{
+
+        const novaCategoria ={
+            nome:req.body.nome,
+            slug:req.body.slug
+        }
+        new Categoria(novaCategoria).save().then(()=>{
+            //Criando uma váriável de sessão é colocando coisa nela
+            req.flash('success_msg', 'Categoria criada com sucesso')
+            //Se o cadastro ocorrer com sucesso me redireciona
+            res.redirect('/admin/categorias');
+        }).catch((err)=>{
+            req.flash('error_msg','Houve um erro ao salvar categoria, tente novamente')
+            console.log('Erro ao salvar categoria!')
+        })
     }
 
-    const novaCategoria ={
-        nome:req.body.nome,
-        slug:req.body.slug
-    }
-    new Categoria(novaCategoria).save().then(()=>{
-        console.log('Cateforia salva com sucesso')
-    }).catch((err)=>{
-        console.log('Erro ao salvar categoria!')
-    })
 })
 
 module.exports = router
