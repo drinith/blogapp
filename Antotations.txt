@@ -1,0 +1,3 @@
+Resolution Bugs for don't show proprieties text when run each
+https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+handlebars@4.5.0
