@@ -6,15 +6,25 @@ require('../models/Categoria')
 const Categoria = mongoose.model('categorias')//Essa estrutura tem que ficar atento pois não é muito tradicional
 require('../models/Postagem')
 const Postagem = mongoose.model('postagens')//Essa estrutura tem que ficar atento pois não é muito tradicional
-router.get('/',(req,res)=>{
+const {eAdmin} = require('../helpers/eAdmin')
+
+
+
+//Acredito que essa rota faria todas as outras seguirem a regra de ser administrador
+/*router.use(eAdmin,(req,res,next)=>{
+    next()
+})*/
+
+//QUando coloco o eAdmin faço essa rota obecer a regra de administrador
+router.get('/',eAdmin,(req,res)=>{
     res.render('admin/index')
 })
 
-router.get('/posts',(req,res)=>{
+router.get('/posts',eAdmin,(req,res)=>{
     res.send('Página principal do painel ADM')
 })
 
-router.get('/categorias',(req,res)=>{
+router.get('/categorias',eAdmin,(req,res)=>{
     
     //Listando as categorias
 
@@ -28,7 +38,8 @@ router.get('/categorias',(req,res)=>{
     
 })
 
-router.get('/categorias/add',(req,res)=>{
+
+router.get('/categorias/add',eAdmin,(req,res)=>{
     res.render('admin/addcategorias')
 })
 
@@ -43,7 +54,7 @@ router.get('/categorias/edit/:id',(req,res)=>{
     
 })
 
-router.post('/categorias/edit',(req,res)=>{
+router.post('/categorias/edit',eAdmin,(req,res)=>{
     console.log('Chegou aqui fora '+req.body.id)
     Categoria.findOne({_id: req.body.id}).then((categoria)=>{
         console.log('Chegou aqui '+req.body.id)
@@ -64,7 +75,7 @@ router.post('/categorias/edit',(req,res)=>{
     })
 })
 
-router.post('/categorias/nova',(req,res)=>{
+router.post('/categorias/nova',eAdmin,(req,res)=>{
     
     //Validação do formulário
     var erros = []
@@ -103,7 +114,7 @@ router.post('/categorias/nova',(req,res)=>{
 })
 
 
-router.post('/categorias/deletar',(req,res)=>{
+router.post('/categorias/deletar',eAdmin,(req,res)=>{
     Categoria.remove({_id:req.body.id}).then(()=>
     {
         req.flash('success_msg','Categoria deletada com sucesso!')
@@ -117,7 +128,7 @@ router.post('/categorias/deletar',(req,res)=>{
 
 //Postagem usando populate para trazer as informações até mesmo de conteudo
 
-router.get('/postagens', (req,res)=>{
+router.get('/postagens',eAdmin, (req,res)=>{
     
     Postagem.find().populate('categoria').sort({data:'desc'}).then((postagens)=>{
         res.render('admin/postagens',{postagens:postagens})
@@ -209,6 +220,16 @@ router.post('/postagem/edit',(req,res)=>{
     }).catch((err)=>{
         console.log(err)
         req.flash('error_msg','Houve um erro ao salvar/editar a edição')
+        res.redirect('/admin/postagens')
+    })
+})
+//Outra forma de deletar
+router.get('/postagens/deletar/:id',(req,res)=>{
+    Postagem.remove({_id:req.params.id}).then(()=>{
+        req.flash('success_msg','Postagem deletada com sucesso')
+        res.redirect('/admin/postagens')
+    }).catch((err)=>{
+        req.flash('error_msg','Houve um erro interno')
         res.redirect('/admin/postagens')
     })
 })
